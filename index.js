@@ -10,12 +10,12 @@ book.get("/createAccount", function(request, response){
     response.render("create account")
 });
 book.get("/", function(request, response){
-
+    response.render("recipes")
 });
 book.get("/accountCreation", async function(request, response){
    
    matchedUsernames=await accounts.find({username:request.query.username}).toArray();
- console.log(matchedUsernames);
+ 
   if(Object.keys(matchedUsernames).length==0){
   
          await accounts.insertOne({username: request.query.username, password: request.query.password});

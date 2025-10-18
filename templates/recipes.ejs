@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <title>Your Recipes</title>
+        <script>
+            class Ingredient{
+    constructor(amount, unit, name){
+        this.amount=amount;
+        this.unit=unit;
+        this.name=name;
+     }
+     toString(){
+          return `${this.amount} ${this.unit} of ${this.name}`;
+      }
+     }
+     const ingredients=[];
+     function AddIngredient(){
+    
+        const ingredient=document.getElementById("ingredient-info");
+        const explanation=document.createElement("h3");
+        explanation.textContent="Enter Ingredient and Proportions Below";
+        ingredient.appendChild(explanation);
+        ingredient.style.display="block";
+         const UNITS=["Cups", "Tablespoons", "Teaspoons"];
+         const amount=document.createElement("input");
+         amount.setAttribute("type", "number");
+         amount.setAttribute("placeholder", "Amount");
+         amount.setAttribute("required", true);
+         amount.setAttribute("min", 0);
+         amount.value="0";
+         const unitSelection=document.createElement("select");
+         for(let current of UNITS){
+            const unitOption=document.createElement("option");
+            unitOption.textContent=current;
+            unitOption.value=current;
+            unitSelection.appendChild(unitOption);
+        }
+         const name=document.createElement("input");
+          name.setAttribute("placeholder", "Ingredient");
+          name.id="name";
+          name.setAttribute("required", true);
+                ingredient.appendChild(amount);
+                ingredient.appendChild(unitSelection);
+                ingredient.appendChild(name);
+                ingredient.innerHTML+="<br>";
+                const ok=document.createElement("button");
+                ok.textContent="Ok";
+                ingredient.appendChild(ok);
+                 const addIngredient=document.getElementById("add-ingredient");
+                function Close(){
+                    ingredient.innerHTML="";
+                    ingredient.style.display="none";
+                    addIngredient.disabled=false;
+                }
+                ok.addEventListener("click", function(){
+                    alert(amount.value);
+                    if(document.getElementById("name").value.length>0){
+                        const newIngredient=new Ingredient(amount.value, unitSelection.value, document.getElementById("name").value)
+                        ingredients.push(newIngredient);
+                        const description=document.createElement("li");
+                        description.textContent=newIngredient.toString();
+                        const recipe=document.getElementById("recipe");
+                        recipe.appendChild(description);
+                        Close();
+                    }
+                    else{
+                        alert("You must enter the amount as well as the ingredient.");
+                    }
+                })
+                const cancel=document.createElement("button");
+                cancel.textContent="Cancel";
+                cancel.addEventListener("click", function(){Close()});
+                ingredient.appendChild(cancel);
+               
+                //So only one box will exist at most
+                addIngredient.disabled=true;
+        }
+
+        </script>
+        <style>
+            #ingredient-info{
+                background-color: lime;
+                z-index: 3000;
+                position:fixed;
+                top:30px;
+                right:20px;
+                width:500px;
+                height:100px;
+                border:1px solid green;
+                display:none;
+            }
+        </style>
+    </head>
+    <body>
+        <ul id="recipe">
+             
+        </ul>
+        <button onclick="AddIngredient()" id="add-ingredient">Add Ingredient</button>
+        <div id="ingredient-info">
+
+        </div>
+    </body>
+</html>
