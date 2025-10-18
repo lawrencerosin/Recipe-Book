@@ -23,7 +23,9 @@
          }
      }
      function SignIn(){
-         window.location.href="/check";
+         const username=document.getElementById("username").value;
+         const password=document.getElementById("password").value;
+         window.location.href=`/check?username=${username}&password=${password}`;
      }
     </script>
   </head>
