@@ -42,6 +42,7 @@
                 ingredient.appendChild(unitSelection);
                 ingredient.appendChild(name);
                   amount.value="0";
+                  amount.id="amount";
                 ingredient.innerHTML+="<br>";
                 const ok=document.createElement("button");
                 ok.textContent="Ok";
@@ -55,7 +56,7 @@
                 ok.addEventListener("click", function(){
                     
                     if(document.getElementById("name").value.length>0){
-                        const newIngredient=new Ingredient(amount.value, unitSelection.value, document.getElementById("name").value)
+                        const newIngredient=new Ingredient(document.getElementById("amount").value, unitSelection.value, document.getElementById("name").value)
                         ingredients.push(newIngredient);
                         const description=document.createElement("li");
                         description.textContent=newIngredient.toString();
@@ -76,6 +77,15 @@
                 addIngredient.disabled=true;
         }
 
+        </script>
+        <script>
+            async function SaveAs(){
+                const recipeName=await prompt("Put in the name you want to give the recipe?");
+                const recipe=document.getElementById("recipe").textContent;
+                await fetch(`/saveAs/username/${recipeName}/${recipe}`).then(function(success, failure){
+                    alert("Success");
+                }).catch(function(){"Failure"});
+            }
         </script>
         <style>
             #ingredient-info{
@@ -100,9 +110,20 @@
                 padding-left:auto;
                 padding-right:auto;
             }
+            .menu-option{
+                background-color:lightgreen;
+                border:1px solid red;
+            }
         </style>
     </head>
     <body>
+        <nav>
+            <span class="menu-option">New</span>
+            <span class="menu-option">Open</span>
+            <span class="menu-option">Save</span>
+            <span class="menu-option" onclick="SaveAs()">Save As</span>
+            <span class="menu-option">Delete</span>
+        </nav>
         <ul id="recipe">
              
         </ul>
