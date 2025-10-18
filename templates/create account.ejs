@@ -1,0 +1,49 @@
+
+<html>
+  <head>
+    <title>Create Account</title>
+    <script>
+       async function CreateAccount(){
+         const username=document.getElementById("username").value;
+         const password=document.getElementById("password").value;
+         const confirmPassword=document.getElementById("confirmPassword").value;
+         if(password==confirmPassword){
+           
+           try{
+              await fetch("/accountCreation").then(
+                function(){window.location.href=`/accountCreation?username=${username}&password=${password};`}
+              )
+           }
+           catch(ex){
+               alert(ex);
+           }
+         }
+         else{
+            alert("Your passwords must match.");
+         }
+     }
+     function SignIn(){
+         window.location.href="/check";
+     }
+    </script>
+  </head>
+  <body>
+     <form>
+        <input type="text" id="username" placeholder="Username" required><br>
+        <input type="password" id="password" placeholder="Password" required> 
+        
+     </form>
+        
+     
+  </body>
+    <script>
+         if(window.location.pathname=="/createAccount"){
+            document.body.innerHTML+=` <input type="password" id="confirmPassword" placeholder="Confirm Password" required><br/>
+        <button id="createAccount" onclick="CreateAccount()">Create Account</button>`;
+         }
+         else{
+          document.title="Sign In";
+          document.body.innerHTML+="<button onclick='SignIn()'>Sign In</button>";
+         }
+       </script>
+</html>
