@@ -22,11 +22,11 @@
         ingredient.style.display="block";
          const UNITS=["Cups", "Tablespoons", "Teaspoons"];
          const amount=document.createElement("input");
+         amount.id="Amount";
          amount.setAttribute("type", "number");
          amount.setAttribute("placeholder", "Amount");
          amount.setAttribute("required", true);
          amount.setAttribute("min", 0);
-         amount.value="0";
          const unitSelection=document.createElement("select");
          for(let current of UNITS){
             const unitOption=document.createElement("option");
@@ -41,6 +41,7 @@
                 ingredient.appendChild(amount);
                 ingredient.appendChild(unitSelection);
                 ingredient.appendChild(name);
+                  amount.value="0";
                 ingredient.innerHTML+="<br>";
                 const ok=document.createElement("button");
                 ok.textContent="Ok";
@@ -52,7 +53,7 @@
                     addIngredient.disabled=false;
                 }
                 ok.addEventListener("click", function(){
-                    alert(amount.value);
+                    
                     if(document.getElementById("name").value.length>0){
                         const newIngredient=new Ingredient(amount.value, unitSelection.value, document.getElementById("name").value)
                         ingredients.push(newIngredient);
@@ -87,6 +88,17 @@
                 height:100px;
                 border:1px solid green;
                 display:none;
+            }
+            #recipe{
+                background-color:lightyellow;
+                list-style-type:none;
+                width:200px;
+                
+            }
+            #recipe>li{
+                border:1px solid black;
+                padding-left:auto;
+                padding-right:auto;
             }
         </style>
     </head>
