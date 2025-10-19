@@ -79,12 +79,26 @@
 
         </script>
         <script>
+           async function Open(){
+            const recipeName=prompt("Put in the name of the recipe you want to open?");
+            await fetch(`/open/winner/${recipeName}`);
+           }
             async function SaveAs(){
                 const recipeName=await prompt("Put in the name you want to give the recipe?");
                 const recipe=document.getElementById("recipe").textContent;
-                await fetch(`/saveAs/username/${recipeName}/${recipe}`).then(function(success, failure){
-                    alert("Success");
-                }).catch(function(){"Failure"});
+                const save=new XMLHttpRequest();
+                save.open("POST", `/saveAs/${sessionStorage.getItem("username")}/${recipeName}/${recipeName}`, true);
+                save.setRequestHeader("Content-Type", "text/html");
+                save.onreadystatechange=function(){
+                    if(save.readyState==4){
+                        if(save.status==200||save.status==201){
+                            alert("Save successful");
+                        }
+                        else
+                           alert("Unable to save recipe");
+                    }
+                }
+                save.send();
             }
         </script>
         <style>
@@ -119,7 +133,7 @@
     <body>
         <nav>
             <span class="menu-option">New</span>
-            <span class="menu-option">Open</span>
+            <span class="menu-option" onclick="Open()">Open</span>
             <span class="menu-option">Save</span>
             <span class="menu-option" onclick="SaveAs()">Save As</span>
             <span class="menu-option">Delete</span>

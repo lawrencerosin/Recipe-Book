@@ -50,17 +50,18 @@ book.get("/check", async function(request, response){
   }
 });
 book.get("/saveAs/:username/:recipeName/:recipe", async function(request, response){
-   await recipes.insertOne({creator:request.params.username, name: request.params.recipeName, ingredients: request.params.recipe});
-  response.send("hello");
+  
 });
 book.post("/saveAs/:username/:recipeName/:recipe", async function(request, response){
- //await recipes.insertOne({creator:request.params.username, name: request.params.recipeName, ingredients: request.params.recipe});
+   
+ await recipes.insertOne({creator:request.params.username, name: request.params.recipeName, ingredients: request.params.recipe});
 });
 book.get("/open/:username/:recipeName", async function(request, response){
-    const opening=recipes.findOne({_id:0, name:1, ingredients:1}, {creator:request.params.username, {name: request.params.recipeName}});
+    const opening=await recipes.findOne({_id:0, name:1, ingredients:1}, {creator:request.params.username});
     response.send("hello");
-  console.log(openings.name);
+  console.log(opening);
 });
+
 book.listen(4000, function(){
   console.log("Running");
 });
