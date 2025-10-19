@@ -46,8 +46,8 @@
                 ingredient.appendChild(amount);
                 ingredient.appendChild(unitSelection);
                 ingredient.appendChild(name);
-                  amount.value="0";
-                  amount.id="amount";
+                amount.value="0";
+                amount.id="amount";
                 ingredient.innerHTML+="<br>";
                 const ok=document.createElement("button");
                 ok.textContent="Ok";
@@ -64,7 +64,14 @@
                         const newIngredient=new Ingredient(document.getElementById("amount").value, document.getElementById("units").value, document.getElementById("name").value)
                         ingredients.push(newIngredient);
                         const description=document.createElement("li");
+                         const deleteButton=document.createElement("button");
+                         deleteButton.textContent="Delete";
+                         deleteButton.style.backgroundColor="red";
+                         deleteButton.addEventListener("click", function(){
+                            description.parentElement.removeChild(description);
+                         });
                         description.textContent=newIngredient.toString();
+                        description.appendChild(deleteButton);
                         const recipe=document.getElementById("recipe");
                         recipe.appendChild(description);
                         Close();
