@@ -32,7 +32,19 @@
      function SignIn(){
          const username=document.getElementById("username").value;
          const password=document.getElementById("password").value;
-         window.location.href=`/check?username=${username}&password=${password}`;
+         const signIn=new XMLHttpRequest();
+         signIn.open("GET", `/check?username=${username}&password=${password}`, true);
+         signIn.setRequestHeader("Content-Type", "text/json");
+         signIn.onreadystatechange=function(){
+          if(signIn.readyState==4&&signIn.status!=200&&signIn.status!=201){
+                 
+             alert("Unable to check if your log in info is accurate.");
+          }
+          else{
+            window.location.href= `/check?username=${username}&password=${password}`;
+          }
+         }
+         signIn.send();
      }
     </script>
   </head>
@@ -46,6 +58,9 @@
      
   </body>
     <script>
+         //Resets text fields
+         document.getElementById("username").value="";
+         document.getElementById("password").value="";
          if(window.location.pathname=="/createAccount"){
             document.body.innerHTML+=` <input type="password" id="confirmPassword" placeholder="Confirm Password" required><br/>
         <button id="createAccount" onclick="CreateAccount()">Create Account</button>`;
