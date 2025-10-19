@@ -8,15 +8,22 @@
          const password=document.getElementById("password").value;
          const confirmPassword=document.getElementById("confirmPassword").value;
          if(password==confirmPassword){
-           
-           try{
-              await fetch("/accountCreation").then(
-                function(){window.location.href=`/accountCreation?username=${username}&password=${password};`}
-              )
-           }
-           catch(ex){
-               alert(ex);
-           }
+             const accountCreation=new XMLHttpRequest();
+              accountCreation.open("POST", `/accountCreation?username=${username}&password=${password}`, true);
+             accountCreation.setRequestHeader("Content-Type", "text/json");
+             accountCreation.onreadystatechange=function(){
+                
+               if(accountCreation.readyState==4){
+                 if(accountCreation.status==200||accountCreation.status==201){
+                     alert("Successfully created your account.");
+                     window.location.href="/signIn";
+                 }
+                 else{
+                  alert("Unable to create your account");
+                 }
+               }
+             }
+            accountCreation.send();
          }
          else{
             alert("Your passwords must match.");

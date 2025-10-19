@@ -15,7 +15,12 @@ book.get("/", function(request, response){
 book.get("/accountCreation", async function(request, response){
    
    matchedUsernames=await accounts.find({username:request.query.username}).toArray();
- 
+   
+  
+});
+book.use(express.json());
+book.post("/accountCreation", async function(request, response){
+    matchedUsernames=await accounts.find({username:request.query.username}).toArray();
   if(Object.keys(matchedUsernames).length==0){
   
          await accounts.insertOne({username: request.query.username, password: request.query.password});
@@ -26,13 +31,9 @@ book.get("/accountCreation", async function(request, response){
   else{
     response.render("account exists");
   }
-});
-book.use(express.json());
-book.post("/accountCreation", async function(request, response){
-  await accounts.insertOne({username: request.query.username, password: request.query.password});
    
   
-   response.send("Checking Sign In");
+  
 });
 book.get("/signIn", function(request, response){
    response.render("create account");
