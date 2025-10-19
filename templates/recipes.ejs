@@ -16,7 +16,7 @@
                  return `${this.amount} ${this.unit}s of ${this.name}`;
              }
           }
-     const ingredients=[];
+     let ingredients=[];
      function AddIngredient(){
     
         const ingredient=document.getElementById("ingredient-info");
@@ -84,6 +84,14 @@
 
         </script>
         <script>
+           function NewRecipe(){
+              ingredients=[];
+              document.getElementById("recipe").innerHTML="";
+              if(sessionStorage.getItem("recipe name")!==null){
+                 sessionStorage.removeItem("recipe name");
+                 ShowRecipeName();
+              }
+           }
            async function Open(){
             const recipeName=prompt("Put in the name of the recipe you want to open?");
             await fetch(`/open/winner/${recipeName}`);
@@ -107,6 +115,7 @@
            async function SaveAs(){
                 const recipeName=await prompt("Put in the name you want to give the recipe?");
                 Write(recipeName);
+                ShowRecipeName();
                 sessionStorage.setItem("recipe name", recipeName);
            }
            async function Save(){
@@ -114,7 +123,7 @@
                 SaveAs();
               }
               else{
-                alert(sessionStorage.getItem("username"));
+                 
                 const recipe=ingredients;
                 const save=new XMLHttpRequest();
                 save.open("PUT", `/save/${sessionStorage.getItem("username")}/${sessionStorage.getItem("recipe name")}/${recipe}`);
@@ -131,6 +140,14 @@
                  save.send();
               }
              
+           }
+          function ShowRecipeName(){
+                const openedRecipe=document.getElementById("opened-recipe");
+                if(sessionStorage.getItem("recipe name")!==null)
+                  openedRecipe.textContent="Opened Recipe: "+sessionStorage.getItem("recipe name");
+                else
+                  openedRecipe.textContent="";
+
            }
         </script>
         <style>
@@ -162,14 +179,15 @@
             }
         </style>
     </head>
-    <body>
+    <body onload="ShowRecipeName()">
         <nav>
-            <span class="menu-option">New</span>
+            <span class="menu-option" onclick="NewRecipe()">New</span>
             <span class="menu-option" onclick="Open()">Open</span>
             <span class="menu-option" onclick="Save()">Save</span>
             <span class="menu-option" onclick="SaveAs()">Save As</span>
             <span class="menu-option">Delete</span>
         </nav>
+        <h3 id="opened-recipe"></h3>
         <ul id="recipe">
              
         </ul>
