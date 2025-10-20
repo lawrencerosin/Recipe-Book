@@ -73,7 +73,7 @@ book.post("/open", async function(request, response){
     const opening=await recipes.findOne({creator:request.query.username, name:request.query.recipe}, {_id:0, creator:0, name:0, ingredients:1});
     console.log(opening);
     if(opening===null){
-       response.send("<h1>Recipe doesn't exist</h1>")
+       response.send("Recipe doesn't exist")
     }
     else{
     response.send(opening["ingredients"])
@@ -84,8 +84,8 @@ book.put("/save/:username/:recipeName/:recipe", async function(request, response
    await recipes.updateOne({name: request.params.recipeName, creator:request.params.username},{$set:{ingredients:request.params.recipe}})
 });
 book.delete("/deleteRecipe", function(request, response){
-   recipes.deleteOne({creator:request.query.username, name:request.query.name});
-
+  recipes.deleteOne({creator:request.query.username, name:request.query.name});
+  response.send("deleted");
 });
 book.listen(4000, function(){
   console.log("Running");

@@ -37,13 +37,15 @@
              }
           }
         let ingredients=[];
-       
+        function RemoveIngredient(current){
+            current.parentElement.parentElement.removeChild(current.parentElement);
+        }
         function CreateDeleteButton(){
             const deleteButton=document.createElement("button");
             deleteButton.textContent="Delete";
             deleteButton.style.backgroundColor="red";
             deleteButton.addEventListener("click", function(){
-               description.parentElement.removeChild(description);
+              RemoveIngredient(deleteButton);
             });
             return deleteButton;
         }
@@ -87,18 +89,18 @@
             ingredient.appendChild(ok);
             const addIngredient=document.getElementById("add-ingredient");
             function Close(){
-              
+                
                 ingredient.innerHTML="";
                 ingredient.style.display="none";
                 addIngredient.disabled=false;
             }
             ok.addEventListener("click", function(){
                 const newIngredient=new Ingredient(document.getElementById("amount").value, document.getElementById("units").value, document.getElementById("name").value);
-              
+                
                 if(document.getElementById("name").value.length>0){
-         
+            
                     ingredients.push(newIngredient);
-                    console.log(Ingredient.CombineArray(ingredients));
+                    
                     
                     const description=document.createElement("li");
                     const deleteButton=CreateDeleteButton(description);
@@ -140,12 +142,14 @@
                 recipe.children[position].textContent=ingredients[position].toString()+recipe.children[position].textContent;
               }
               for(let position=0; position<recipe.children.length; position++){
-                recipe.children[position].innerHTML+="<button style='background-color:red;'' onclick='RemoveIngredient()'>Delete</button>";
+                recipe.children[position].innerHTML+="<button style='background-color:red;'' onclick='RemoveIngredient(this)'>Delete</button>";
               }
             
             }
-           //Works with the database
+           
+            //Works with the database
            function GetIngredients(ingredientList){
+            alert(ingredientList)
                const recipe=JSON.parse(ingredientList);
                ingredients=[];//Resets
                for(let ingredient of recipe){
@@ -165,6 +169,8 @@
                     if(opening.status==200||opening.status==201){
                         GetIngredients(opening.responseText);
                        DisplayRecipe(recipe);
+                       sessionStorage.setItem("recipe name", recipeName);
+                       
                     }
                        
                     else
@@ -202,7 +208,7 @@
               }
               else{
                  
-                const recipe=ingredients;
+                const recipe=Ingredient.CombineArray(ingredients);
                 const save=new XMLHttpRequest();
                 save.open("PUT", `/save/${sessionStorage.getItem("username")}/${sessionStorage.getItem("recipe name")}/${recipe}`);
                 save.setRequestHeader("Content-Type", "text/json");
@@ -230,9 +236,11 @@
           
            function DeleteRecipe(){
              const deletion=new XMLHttpRequest();
-             deletion.open("DELETE", `/delete?username="${sessionStorage.getItem("username")}"&recipe="${sessionStorage.getItem("recipe name")}`);
+             deletion.open("DELETE", `/deleteRecipe?username=${sessionStorage.getItem("username")}&name=${sessionStorage.getItem("recipe name")}`, true);
              deletion.setRequestHeader("Content-Type", "text/json");
+             
              deletion.onreadystatechange=function(){
+                 
                 if(deletion.readyState==4){
                     if(deletion.status==200||deletion.status==201){
                         alert("Successfully deleted "+sessionStorage.getItem("recipe name"));
@@ -289,7 +297,7 @@
             <span class="menu-option" onclick="Open()">Open</span>
             <span class="menu-option" onclick="Save()">Save</span>
             <span class="menu-option" onclick="SaveAs()">Save As</span>
-            <span class="menu-option">Delete</span>
+            <span class="menu-option" onclick="DeleteRecipe()">Delete</span>
         </nav>
         <p>${ingredients}</p>
         <h1 id="hello"></h1>
