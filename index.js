@@ -87,6 +87,9 @@ book.delete("/deleteRecipe", function(request, response){
   recipes.deleteOne({creator:request.query.username, name:request.query.name});
   response.send("deleted");
 });
+book.get("/profile", function(request, response){
+   response.render("profile");
+});
 book.listen(4000, function(){
   console.log("Running");
 });

@@ -256,15 +256,43 @@
            }
         </script>
         <script>
-            function SayHello(){
-                document.getElementById("hello").textContent="Hello "+sessionStorage.getItem("username");
+            function SignOut(){
+                sessionStorage.removeItem("username");
+                NewRecipe();
+                document.getElementById("hello").textContent="";
+            }
+            function ViewProfile(){
+                window.location.href="/profile";
+            }
+        </script>
+        <script>
+            function LogInResponse(){
+                if(sessionStorage.getItem("username")===null)
+                  document.getElementById("profile-menu").style.display="none";
+                else
+                  document.getElementById("hello").textContent="Hello "+sessionStorage.getItem("username");
+            }
+        </script>
+        <script>
+            function ShowMenu(current){
+                const menu=current.nextElementSibling;
+                if(menu.style.display=="none"){
+                  menu.style.display="block";
+                 }
+                 else
+                    menu.style.display="none";
+            }
+            function HideMenu(current){
+                current.parentElement.style.display="none";
             }
         </script>
         <style>
             :root{
                 --menu-width:200px;
-               --menu-background: lightgreen;
-               --menu-border: 2px solid red;
+               --file-background: lightgreen;
+               --file-border: 2px solid red;
+               --profile-background:lightblue;
+               --profile-border:2px solid silver;
             }
             #ingredient-info{
                 background-color: lime;
@@ -288,15 +316,26 @@
                 padding-left:auto;
                 padding-right:auto;
             }
-            .menu-option{
-                background-color:var(--menu-background);
-                border:var(--menu-border);
+            .file-option{
+                background-color:var(--file-background);
+                border:var(--fileborder);
                 width:var(--menu-width);
             }
-            .menu-title{
-                background-color:var(--menu-background);
-                border:var(--menu-border);
+            #file-title{
+                background-color:var(--file-background);
+                border:var(--file-border);
                 font-weight:bold;
+                width:var(--menu-width);
+            }
+            #profile-title{
+                background-color:var(--profile-background);
+                border:var(--profile-border);
+                width:var(--menu-width);
+                font-weight:bold;
+            }
+            .profile-option{
+                 background-color:var(--profile-background);
+                border:var(--profile-border);
                 width:var(--menu-width);
             }
             .menu{
@@ -305,18 +344,32 @@
             #hello{
                 text-align:right;
             }
+            #menus{
+                display:flex;
+                flex-direction: row;
+            }
         </style>
     </head>
-    <body onload="ShowRecipeName(); SayHello();">
-        <div class="menu-title">File</div>
-        <div class="menu">
-            <div class="menu-option" onclick="NewRecipe()">New</div>
-            <div class="menu-option" onclick="Open()">Open</div>
-            <div class="menu-option" onclick="Save()">Save</div>
-            <div class="menu-option" onclick="SaveAs()">Save As</div>
-            <div class="menu-option" onclick="DeleteRecipe()">Delete</div>
-        </div>
-        
+    <body onload="ShowRecipeName(); LogInResponse();">
+        <nav id="menus">
+            <span>
+             <div id="file-title" onclick="ShowMenu(this)">File</div>
+             <div class="menu">
+                <div class="file-option" onclick="NewRecipe(); HideMenu()">New</div>
+                <div class="file-option" onclick="Open(); HideMenu()">Open</div>
+                <div class="file-option" onclick="Save(); HideMenu()">Save</div>
+                <div class="file-option" onclick="SaveAs(); HideMenu()">Save As</div>
+                <div class="file-option" onclick="DeleteRecipe(); HideMenu()">Delete</div>
+             </div>
+            </span>
+             <span id="profile-menu"> 
+              <div id="profile-title" onclick="ShowMenu(this)">Profile</div>
+              <div class="menu">
+                <div class="profile-option" onclick="SignOut(); HideMenu(this)">Sign Out</div>
+                <div class="profile-option" onclick="ViewProfile(); HideMenu(this)"> View Profile</div>
+              </div>
+              </span>
+        </nav>
         <h1 id="hello"></h1>
         <h3 id="opened-recipe"></h3>
         <ul id="recipe">
@@ -327,17 +380,6 @@
 
         </div>
     </body>
-    <script>
-        const menuTitles=document.getElementsByClassName("menu-title");
-        for(let menuTitle of menuTitles){
-            menuTitle.addEventListener("click", function(event){
-                event.preventDefault();
-                const menu=menuTitle.nextElementSibling;
-                if(menu.style.display=="none")
-                  menu.style.display="block";
-                else
-                 menu.style.display="none";
-            });
-        }
-    </script>
+     
+   
 </html>
