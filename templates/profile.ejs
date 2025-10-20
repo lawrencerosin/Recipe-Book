@@ -2,12 +2,62 @@
 <html>
     <head>
         <title>Profile</title>
+        <script>
+            //Avoids putting in undefined if no value exists
+            function SetValue(id, value){
+                if(value!==undefined){
+                    document.getElementById(id).value=value;
+                }
+            }
+            async function ShowProfile(){
+               const profileContent=new XMLHttpRequest();
+               profileContent.open("POST", "/profileContent/"+sessionStorage.getItem("username"), true);
+               profileContent.setRequestHeader("Content-Type", "text/json");
+               profileContent.onreadystatechange=function(){
+                  if(profileContent.readyState==4){
+                  
+                     if(profileContent.status==200||profileContent.status==201){
+                        const parts=JSON.parse(profileContent.responseText);
+                       document.getElementById("username").textContent=parts["username"];
+                       SetValue("name", parts["name"]);
+                       SetValue("email", parts["email"]);
+                       const public=document.getElementById("public");
+                       if(parts["public"]!==undefined)
+                          public.checked=parts[public];
+                     }
+                   
+                  }
+               }
+               profileContent.send();
+            }
+            function UpdateProfile(){
+                const name=document.getElementById("name").value;
+                const email=document.getElementById("email").value;
+                const public=document.getElementById("public").checked;
+                const change=new XMLHttpRequest();
+                change.open("PUT", `/profileContent?username=${sessionStorage.getItem("username")}&name=${name}&email=${email}&public=${public}`);
+                change.setRequestHeader("Content-Type", "text/json");
+                change.onreadystatechange=function(){
+                    if(change.readyState==4){
+                        if(change.status==200||change.status==201){
+                            alert("Successfully updated profile")
+                        }
+                        else{
+                            alert("Unable to update profile");
+                        }
+                    }
+                }
+                change.send();
+            }
+        </script>
     </head>
-    <body>
+    <body onload="ShowProfile()">
         <form>
+            <h3 id="username"></h3>
             Name:<input type="text" id="name"><br/>
             E-mail Address:<input type="email" id="email"><br/>
             Public:<input type="checkbox" id="public">
+            <button type="button" onclick="UpdateProfile()">Update Profile</button>
         </form>
     </body>
 </html>

@@ -282,7 +282,7 @@
                  else
                     menu.style.display="none";
             }
-            function HideMenu(current){
+            function HideParent(current){
                 current.parentElement.style.display="none";
             }
         </script>
@@ -365,8 +365,8 @@
              <span id="profile-menu"> 
               <div id="profile-title" onclick="ShowMenu(this)">Profile</div>
               <div class="menu">
-                <div class="profile-option" onclick="SignOut(); HideMenu(this)">Sign Out</div>
-                <div class="profile-option" onclick="ViewProfile(); HideMenu(this)"> View Profile</div>
+                <div class="profile-option" onclick="SignOut(); HideParent(this)">Sign Out</div>
+                <div class="profile-option" onclick="ViewProfile(); HideParent(this)"> View Profile</div>
               </div>
               </span>
         </nav>

@@ -4,6 +4,7 @@ const book=express();
 let matchedUsernames;
 const accounts=database.collection("Accounts");
 const recipes=database.collection("Recipes");
+const profile=database.collection("Profile");
 book.set("view engine", "ejs");
 book.set("views","./templates"); 
 book.get("/createAccount", function(request, response){
@@ -24,8 +25,8 @@ book.post("/accountCreation", async function(request, response){
   if(Object.keys(matchedUsernames).length==0){
   
          await accounts.insertOne({username: request.query.username, password: request.query.password});
-   
-    response.render("account creation");
+         await profile.insertOne({username: request.query.username, public:false});
+         response.render("account creation");
    
   }
   else{
@@ -88,7 +89,16 @@ book.delete("/deleteRecipe", function(request, response){
   response.send("deleted");
 });
 book.get("/profile", function(request, response){
+   
    response.render("profile");
+});
+book.post("/profileContent/:username", async function(request, response){
+   const profileContent=await profile.findOne({username:request.params.username}, {_id:0, username:1, public:1, email:1});
+   response.send(profileContent);
+});
+book.put("/profileContent", async function(request, response){
+   await profile.updateOne({username:request.query.username}, {$set:{name:request.query.name, public:request.query.public, email:request.query.email}});
+   response.send("Success");
 });
 book.listen(4000, function(){
   console.log("Running");
