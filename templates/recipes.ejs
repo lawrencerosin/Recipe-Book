@@ -149,7 +149,7 @@
            
             //Works with the database
            function GetIngredients(ingredientList){
-            alert(ingredientList)
+            
                const recipe=JSON.parse(ingredientList);
                ingredients=[];//Resets
                for(let ingredient of recipe){
@@ -236,18 +236,19 @@
           
            function DeleteRecipe(){
              const deletion=new XMLHttpRequest();
-             deletion.open("DELETE", `/deleteRecipe?username=${sessionStorage.getItem("username")}&name=${sessionStorage.getItem("recipe name")}`, true);
+             const unwantedFile=prompt("Put in the name of the recipe you want to delete.");
+             deletion.open("DELETE", `/deleteRecipe?username=${sessionStorage.getItem("username")}&name=${unwantedFile}`, true);
              deletion.setRequestHeader("Content-Type", "text/json");
-             
+            
              deletion.onreadystatechange=function(){
                  
                 if(deletion.readyState==4){
                     if(deletion.status==200||deletion.status==201){
-                        alert("Successfully deleted "+sessionStorage.getItem("recipe name"));
+                        alert("Successfully deleted "+unwantedFile+" if it exists.");
                         NewRecipe();
                     }
                     else{
-                         alert("Unable to delete "+sessionStorage.getItem("recipe name"));
+                         alert("Unable to delete "+unwantedFile);
                     }
                 }
              }
