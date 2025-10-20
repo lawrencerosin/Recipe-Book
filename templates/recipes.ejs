@@ -261,6 +261,11 @@
             }
         </script>
         <style>
+            :root{
+                --menu-width:200px;
+               --menu-background: lightgreen;
+               --menu-border: 2px solid red;
+            }
             #ingredient-info{
                 background-color: lime;
                 z-index: 3000;
@@ -284,8 +289,18 @@
                 padding-right:auto;
             }
             .menu-option{
-                background-color:lightgreen;
-                border:1px solid red;
+                background-color:var(--menu-background);
+                border:var(--menu-border);
+                width:var(--menu-width);
+            }
+            .menu-title{
+                background-color:var(--menu-background);
+                border:var(--menu-border);
+                font-weight:bold;
+                width:var(--menu-width);
+            }
+            .menu{
+                display:none;
             }
             #hello{
                 text-align:right;
@@ -293,14 +308,15 @@
         </style>
     </head>
     <body onload="ShowRecipeName(); SayHello();">
-        <nav>
-            <span class="menu-option" onclick="NewRecipe()">New</span>
-            <span class="menu-option" onclick="Open()">Open</span>
-            <span class="menu-option" onclick="Save()">Save</span>
-            <span class="menu-option" onclick="SaveAs()">Save As</span>
-            <span class="menu-option" onclick="DeleteRecipe()">Delete</span>
-        </nav>
-        <p>${ingredients}</p>
+        <div class="menu-title">File</div>
+        <div class="menu">
+            <div class="menu-option" onclick="NewRecipe()">New</div>
+            <div class="menu-option" onclick="Open()">Open</div>
+            <div class="menu-option" onclick="Save()">Save</div>
+            <div class="menu-option" onclick="SaveAs()">Save As</div>
+            <div class="menu-option" onclick="DeleteRecipe()">Delete</div>
+        </div>
+        
         <h1 id="hello"></h1>
         <h3 id="opened-recipe"></h3>
         <ul id="recipe">
@@ -311,4 +327,17 @@
 
         </div>
     </body>
+    <script>
+        const menuTitles=document.getElementsByClassName("menu-title");
+        for(let menuTitle of menuTitles){
+            menuTitle.addEventListener("click", function(event){
+                event.preventDefault();
+                const menu=menuTitle.nextElementSibling;
+                if(menu.style.display=="none")
+                  menu.style.display="block";
+                else
+                 menu.style.display="none";
+            });
+        }
+    </script>
 </html>
