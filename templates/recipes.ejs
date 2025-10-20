@@ -8,6 +8,26 @@
                 this.unit=unit;
                 this.name=name;
               }
+              Combine(){
+                let combined="";
+                for(let property in this){
+                    if(combined.length>0)
+                      combined+=",";
+                    combined+=this[property];
+                }
+                return combined;
+              }
+              static CombineArray(ingredients){
+                 let combined="";
+                 if(ingredients.length>0){
+                    combined=ingredients[0].Combine();
+                    console.log("size"+ingredients.length);
+                    for(let position=1; position<ingredients.length; position++){
+                        combined+=";"+ingredients[position].Combine();
+                    }
+                 }
+                 return combined;
+              }
               toString(){
                 //No "s" at the end if there is exactly one
                 if(this.amount==1)
@@ -16,7 +36,19 @@
                  return `${this.amount} ${this.unit}s of ${this.name}`;
              }
           }
-     let ingredients=[];
+        let ingredients=[];
+       
+        function CreateDeleteButton(){
+            const deleteButton=document.createElement("button");
+            deleteButton.textContent="Delete";
+            deleteButton.style.backgroundColor="red";
+            deleteButton.addEventListener("click", function(){
+               description.parentElement.removeChild(description);
+            });
+            return deleteButton;
+        }
+       
+     
      function AddIngredient(){
     
         const ingredient=document.getElementById("ingredient-info");
@@ -33,6 +65,7 @@
          amount.setAttribute("min", 0);
          const unitSelection=document.createElement("select");
          unitSelection.id="units";
+         
          for(let current of UNITS){
             const unitOption=document.createElement("option");
             unitOption.textContent=current;
@@ -43,50 +76,50 @@
           name.setAttribute("placeholder", "Ingredient");
           name.id="name";
           name.setAttribute("required", true);
-                ingredient.appendChild(amount);
-                ingredient.appendChild(unitSelection);
-                ingredient.appendChild(name);
-                amount.value="0";
-                amount.id="amount";
-                ingredient.innerHTML+="<br>";
-                const ok=document.createElement("button");
-                ok.textContent="Ok";
-                ingredient.appendChild(ok);
-                 const addIngredient=document.getElementById("add-ingredient");
-                function Close(){
-                    ingredient.innerHTML="";
-                    ingredient.style.display="none";
-                    addIngredient.disabled=false;
-                }
-                ok.addEventListener("click", function(){
+            ingredient.appendChild(amount);
+            ingredient.appendChild(unitSelection);
+            ingredient.appendChild(name);
+            amount.value="0";
+            amount.id="amount";
+            ingredient.innerHTML+="<br>";
+            const ok=document.createElement("button");
+            ok.textContent="Ok";
+            ingredient.appendChild(ok);
+            const addIngredient=document.getElementById("add-ingredient");
+            function Close(){
+              
+                ingredient.innerHTML="";
+                ingredient.style.display="none";
+                addIngredient.disabled=false;
+            }
+            ok.addEventListener("click", function(){
+                const newIngredient=new Ingredient(document.getElementById("amount").value, document.getElementById("units").value, document.getElementById("name").value);
+              
+                if(document.getElementById("name").value.length>0){
+         
+                    ingredients.push(newIngredient);
+                    console.log(Ingredient.CombineArray(ingredients));
                     
-                    if(document.getElementById("name").value.length>0){
-                        const newIngredient=new Ingredient(document.getElementById("amount").value, document.getElementById("units").value, document.getElementById("name").value)
-                        ingredients.push(newIngredient);
-                        const description=document.createElement("li");
-                         const deleteButton=document.createElement("button");
-                         deleteButton.textContent="Delete";
-                         deleteButton.style.backgroundColor="red";
-                         deleteButton.addEventListener("click", function(){
-                            description.parentElement.removeChild(description);
-                         });
-                        description.textContent=newIngredient.toString();
-                        description.appendChild(deleteButton);
-                        const recipe=document.getElementById("recipe");
-                        recipe.appendChild(description);
-                        Close();
-                    }
-                    else{
-                        alert("You must enter the amount as well as the ingredient.");
-                    }
-                })
-                const cancel=document.createElement("button");
-                cancel.textContent="Cancel";
-                cancel.addEventListener("click", function(){Close()});
-                ingredient.appendChild(cancel);
-               
-                //So only one box will exist at most
-                addIngredient.disabled=true;
+                    const description=document.createElement("li");
+                    const deleteButton=CreateDeleteButton(description);
+                    description.textContent=newIngredient.toString();
+                    description.appendChild(deleteButton);
+                    const recipe=document.getElementById("recipe");
+                    recipe.appendChild(description);
+                    Close();
+                }
+                else{
+                    alert("You must enter the amount as well as the ingredient.");
+                }
+                        
+            });
+            const cancel=document.createElement("button");
+            cancel.textContent="Cancel";
+            cancel.addEventListener("click", function(){Close()});
+            ingredient.appendChild(cancel);
+            
+            //So only one box will exist at most
+            addIngredient.disabled=true;
         }
 
         </script>
@@ -99,14 +132,52 @@
                  ShowRecipeName();
               }
            }
+           function DisplayRecipe(recipe){
+             //Resets
+              recipe.innerHTML="";
+              for(let position=0; position<ingredients.length; position++){
+                recipe.innerHTML+="<li></li>";
+                recipe.children[position].textContent=ingredients[position].toString()+recipe.children[position].textContent;
+              }
+              for(let position=0; position<recipe.children.length; position++){
+                recipe.children[position].innerHTML+="<button style='background-color:red;'' onclick='RemoveIngredient()'>Delete</button>";
+              }
+            
+            }
+           //Works with the database
+           function GetIngredients(ingredientList){
+               const recipe=JSON.parse(ingredientList);
+               ingredients=[];//Resets
+               for(let ingredient of recipe){
+                 ingredients.push(new Ingredient(ingredient.amount, ingredient.unit, ingredient.name));
+               }
+           }
            async function Open(){
-            const recipeName=prompt("Put in the name of the recipe you want to open?");
-            await fetch(`/open/winner/${recipeName}`);
+              const recipeName=await prompt("Put in the name of the recipe you want to open?");
+              const recipe=document.getElementById("recipe");
+              const opening=new XMLHttpRequest();
+              
+              opening.open("POST", `/open?username=${sessionStorage.getItem("username")}&recipe=${recipeName}`, true);
+              opening.setRequestHeader("Content-Type", "text/json");
+              opening.onreadystatechange=function(){
+                  
+                  if(opening.readyState==4){
+                    if(opening.status==200||opening.status==201){
+                        GetIngredients(opening.responseText);
+                       DisplayRecipe(recipe);
+                    }
+                       
+                    else
+                      alert("Unable to access recipe. Please make sure it exists.");
+                  }
+              }
+              opening.send();    
+               
            }
            async function Write(recipeName){
                 const recipe=document.getElementById("recipe").textContent;
                 const writer=new XMLHttpRequest();
-                writer.open("POST", `/saveAs/${sessionStorage.getItem("username")}/${recipeName}/${recipeName}`, true);
+                writer.open("POST", `/saveAs?username=${sessionStorage.getItem("username")}&recipeName=${recipeName}&recipe=${Ingredient.CombineArray(ingredients)}`, true);
                 writer.setRequestHeader("Content-Type", "text/json");
                 writer.onreadystatechange=function(){
                     if(save.readyState==4){
@@ -156,6 +227,29 @@
                   openedRecipe.textContent="";
 
            }
+          
+           function DeleteRecipe(){
+             const deletion=new XMLHttpRequest();
+             deletion.open("DELETE", `/delete?username="${sessionStorage.getItem("username")}"&recipe="${sessionStorage.getItem("recipe name")}`);
+             deletion.setRequestHeader("Content-Type", "text/json");
+             deletion.onreadystatechange=function(){
+                if(deletion.readyState==4){
+                    if(deletion.status==200||deletion.status==201){
+                        alert("Successfully deleted "+sessionStorage.getItem("recipe name"));
+                        NewRecipe();
+                    }
+                    else{
+                         alert("Unable to delete "+sessionStorage.getItem("recipe name"));
+                    }
+                }
+             }
+             deletion.send();
+           }
+        </script>
+        <script>
+            function SayHello(){
+                document.getElementById("hello").textContent="Hello "+sessionStorage.getItem("username");
+            }
         </script>
         <style>
             #ingredient-info{
@@ -184,9 +278,12 @@
                 background-color:lightgreen;
                 border:1px solid red;
             }
+            #hello{
+                text-align:right;
+            }
         </style>
     </head>
-    <body onload="ShowRecipeName()">
+    <body onload="ShowRecipeName(); SayHello();">
         <nav>
             <span class="menu-option" onclick="NewRecipe()">New</span>
             <span class="menu-option" onclick="Open()">Open</span>
@@ -194,6 +291,8 @@
             <span class="menu-option" onclick="SaveAs()">Save As</span>
             <span class="menu-option">Delete</span>
         </nav>
+        <p>${ingredients}</p>
+        <h1 id="hello"></h1>
         <h3 id="opened-recipe"></h3>
         <ul id="recipe">
              

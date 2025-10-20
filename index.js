@@ -48,23 +48,44 @@ book.get("/check", async function(request, response){
    
   }
   else{
-    response.send(`<script>alert("${request.query.username}");sessionStorage.setItem("username", "${request.query.username}");</script><h1>Successfully Signed In</h1><br/><a href="/">Click here to create and view a recipe</a>`);
+    response.send(`<script>sessionStorage.setItem("username", "${request.query.username}");</script><h1>Successfully Signed In</h1><br/><a href="/">Click here to create and view a recipe</a>`);
   }
-});
-book.get("/saveAs/:username/:recipeName/:recipe", async function(request, response){
-  
-});
-book.post("/saveAs/:username/:recipeName/:recipe", async function(request, response){
+}); 
+function IntoObjectArray(ingredientList){
+   const ingredients=[];
+   const ingredientArray=ingredientList.split(";");
+   for(let ingredient of ingredientArray){
+     const PROPERTIES=["amount", "unit", "name"];
+     const parts=ingredient.split(",");
+     const ingredientParts={};
+     for(let position=0; position<PROPERTIES.length; position++){
+        ingredientParts[PROPERTIES[position]]=parts[position];
+     }
+     ingredients.push(ingredientParts);
+   }
+   return ingredients;
+}
+book.post("/saveAs", async function(request, response){
    
- await recipes.insertOne({creator:request.params.username, name: request.params.recipeName, ingredients: request.params.recipe});
+ await recipes.insertOne({creator:request.query.username, name: request.query.recipeName, ingredients: IntoObjectArray(request.query.recipe)});
 });
-book.get("/open/:username/:recipeName", async function(request, response){
-    const opening=await recipes.findOne({_id:0, name:1, ingredients:1}, {creator:request.params.username});
-    
+book.post("/open", async function(request, response){
+    const opening=await recipes.findOne({creator:request.query.username, name:request.query.recipe}, {_id:0, creator:0, name:0, ingredients:1});
+    console.log(opening);
+    if(opening===null){
+       response.send("<h1>Recipe doesn't exist</h1>")
+    }
+    else{
+    response.send(opening["ingredients"])
+    }
   
 });
 book.put("/save/:username/:recipeName/:recipe", async function(request, response){
    await recipes.updateOne({name: request.params.recipeName, creator:request.params.username},{$set:{ingredients:request.params.recipe}})
+});
+book.delete("/deleteRecipe", function(request, response){
+   recipes.deleteOne({creator:request.query.username, name:request.query.name});
+
 });
 book.listen(4000, function(){
   console.log("Running");
