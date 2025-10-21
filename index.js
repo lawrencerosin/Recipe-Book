@@ -45,7 +45,7 @@ book.get("/signIn", function(request, response){
 book.use(express.json());
 book.get("/check", async function(request, response){
   
-  const signInCheck=await accounts.find({username:request.query.username}).toArray();
+  const signInCheck=await accounts.find({username:request.query.username, password:request.query.password}).toArray();
    
   if(signInCheck.length==0){
     response.send(`<h1>Failed to Sign In</h1><br/><a href="/signIn">Click here to sign in again.</a>`);
@@ -100,12 +100,10 @@ book.post("/profileContent/:username", async function(request, response){
    response.send(profileContent);
 });
 book.put("/profileContent", async function(request, response){
-   await profile.updateOne({username:request.query.username}, {$set:{name:request.query.name, public:request.query.public, email:request.query.email}});
+   await profile.updateOne({username:request.query.username}, {$set:{name:request.query.name, email:request.query.email}});
    response.send("Success");
 });
-book.get("/viewProfiles", function(request, response){
  
-});
 book.listen(4000, function(){
   console.log("Running");
 });

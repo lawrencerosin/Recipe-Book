@@ -22,8 +22,7 @@
                        SetValue("name", parts["name"]);
                        SetValue("email", parts["email"]);
                        const public=document.getElementById("public");
-                       if(parts["public"]!==undefined)
-                          public.checked=parts[public];
+                       
                      }
                    
                   }
@@ -33,9 +32,9 @@
             function UpdateProfile(){
                 const name=document.getElementById("name").value;
                 const email=document.getElementById("email").value;
-                const public=document.getElementById("public").checked;
+                 
                 const change=new XMLHttpRequest();
-                change.open("PUT", `/profileContent?username=${sessionStorage.getItem("username")}&name=${name}&email=${email}&public=${public}`);
+                change.open("PUT", `/profileContent?username=${sessionStorage.getItem("username")}&name=${name}&email=${email}`);
                 change.setRequestHeader("Content-Type", "text/json");
                 change.onreadystatechange=function(){
                     if(change.readyState==4){
@@ -56,7 +55,7 @@
             <h3 id="username"></h3>
             Name:<input type="text" id="name"><br/>
             E-mail Address:<input type="email" id="email"><br/>
-            Public:<input type="checkbox" id="public">
+           
             <button type="button" onclick="UpdateProfile()">Update Profile</button>
         </form>
     </body>
