@@ -274,17 +274,15 @@
             }
         </script>
         <script>
-            function ShowMenu(current){
-                const menu=current.nextElementSibling;
+            function ShowOrHideMenu(menu){
+                 
                 if(menu.style.display=="none"){
                   menu.style.display="block";
                  }
                  else
                     menu.style.display="none";
             }
-            function HideParent(current){
-                current.parentElement.style.display="none";
-            }
+            
         </script>
         <style>
             :root{
@@ -350,23 +348,23 @@
             }
         </style>
     </head>
-    <body onload="ShowRecipeName(); LogInResponse();">
+    <body style="background-color:orange" onload="ShowRecipeName(); LogInResponse();">
         <nav id="menus">
             <span>
-             <div id="file-title" onclick="ShowMenu(this)">File</div>
+             <div id="file-title" onclick="ShowOrHideMenu(this.nextElementSibling)">File</div>
              <div class="menu">
-                <div class="file-option" onclick="NewRecipe(); HideMenu()">New</div>
-                <div class="file-option" onclick="Open(); HideMenu()">Open</div>
-                <div class="file-option" onclick="Save(); HideMenu()">Save</div>
-                <div class="file-option" onclick="SaveAs(); HideMenu()">Save As</div>
-                <div class="file-option" onclick="DeleteRecipe(); HideMenu()">Delete</div>
+                <div class="file-option" onclick="NewRecipe(); ShowOrHideMenu(this.parentElement)">New</div>
+                <div class="file-option" onclick="Open(); ShowOrHideMenu(this.parentElement)">Open</div>
+                <div class="file-option" onclick="Save(); ShowOrHideMenu(this.parentElement)">Save</div>
+                <div class="file-option" onclick="SaveAs(); ShowOrHideMenu(this.parentElement)">Save As</div>
+                <div class="file-option" onclick="DeleteRecipe(); ShowOrHideMenu(this.parentElement)">Delete</div>
              </div>
             </span>
              <span id="profile-menu"> 
-              <div id="profile-title" onclick="ShowMenu(this)">Profile</div>
+              <div id="profile-title" onclick="ShowOrHideMenu(this.nextElementSibling)">Profile</div>
               <div class="menu">
-                <div class="profile-option" onclick="SignOut(); HideParent(this)">Sign Out</div>
-                <div class="profile-option" onclick="ViewProfile(); HideParent(this)"> View Profile</div>
+                <div class="profile-option" onclick="SignOut(); ShowOrHideMenu(this.parentElement)">Sign Out</div>
+                <div class="profile-option" onclick="ViewProfile(); ShowOrHideMenu(this.parentElement)"> View Profile</div>
               </div>
               </span>
         </nav>

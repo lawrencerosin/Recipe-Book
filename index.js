@@ -10,8 +10,15 @@ book.set("views","./templates");
 book.get("/createAccount", function(request, response){
     response.render("create account")
 });
-book.get("/", function(request, response){
+book.get("/", async function(request, response){
+      console.log("hi");
+     await profile.createIndex("visible_profiles", {public:true}, {_id:0, username:1, name:1});
     response.render("recipes")
+});
+book.post("/", async function(request, response){
+   
+   console.log("hello");
+   response.send("create");
 });
 book.get("/accountCreation", async function(request, response){
    
@@ -72,7 +79,7 @@ book.post("/saveAs", async function(request, response){
 });
 book.post("/open", async function(request, response){
     const opening=await recipes.findOne({creator:request.query.username, name:request.query.recipe}, {_id:0, creator:0, name:0, ingredients:1});
-    console.log(opening);
+    
     if(opening===null){
        response.send("Recipe doesn't exist")
     }
@@ -99,6 +106,9 @@ book.post("/profileContent/:username", async function(request, response){
 book.put("/profileContent", async function(request, response){
    await profile.updateOne({username:request.query.username}, {$set:{name:request.query.name, public:request.query.public, email:request.query.email}});
    response.send("Success");
+});
+book.get("/viewProfiles", function(request, response){
+ 
 });
 book.listen(4000, function(){
   console.log("Running");
