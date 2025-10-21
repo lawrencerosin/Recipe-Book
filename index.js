@@ -10,16 +10,12 @@ book.set("views","./templates");
 book.get("/createAccount", function(request, response){
     response.render("create account")
 });
+book.use("/templates/css", express.static("public"));
 book.get("/", async function(request, response){
-      console.log("hi");
-     await profile.createIndex("visible_profiles", {public:true}, {_id:0, username:1, name:1});
+     
+     
     response.render("recipes")
-});
-book.post("/", async function(request, response){
-   
-   console.log("hello");
-   response.send("create");
-});
+}); 
 book.get("/accountCreation", async function(request, response){
    
    matchedUsernames=await accounts.find({username:request.query.username}).toArray();

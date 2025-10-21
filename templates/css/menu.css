@@ -1,0 +1,37 @@
+ :root{
+    --menu-width:200px;
+    --file-background: lightgreen;
+    --file-border: 2px solid red;
+    --profile-background:lightblue;
+    --profile-border:2px solid silver;
+}
+.file-option{
+    background-color:var(--file-background);
+    border:var(--fileborder);
+    width:var(--menu-width);
+}
+#file-title{
+    background-color:var(--file-background);
+    border:var(--file-border);
+    font-weight:bold;
+    width:var(--menu-width);
+}
+#profile-title{
+    background-color:var(--profile-background);
+    border:var(--profile-border);
+    width:var(--menu-width);
+    font-weight:bold;
+}
+.profile-option{
+        background-color:var(--profile-background);
+    border:var(--profile-border);
+    width:var(--menu-width);
+}
+            
+ .menu{
+   display:none;
+}
+ #menus{
+     display:flex;
+     flex-direction: row;
+}

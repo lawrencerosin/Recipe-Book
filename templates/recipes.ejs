@@ -292,6 +292,7 @@
                --profile-background:lightblue;
                --profile-border:2px solid silver;
             }
+           
             #ingredient-info{
                 background-color: lime;
                 z-index: 3000;
@@ -318,33 +319,45 @@
                 background-color:var(--file-background);
                 border:var(--fileborder);
                 width:var(--menu-width);
+                 text-align:center;
             }
             #file-title{
                 background-color:var(--file-background);
                 border:var(--file-border);
                 font-weight:bold;
                 width:var(--menu-width);
+                 text-align:center;
             }
             #profile-title{
                 background-color:var(--profile-background);
                 border:var(--profile-border);
                 width:var(--menu-width);
                 font-weight:bold;
+                text-align:center;
             }
             .profile-option{
+                 text-align:center;
                  background-color:var(--profile-background);
                 border:var(--profile-border);
                 width:var(--menu-width);
+            }
+            .profile-option:hover, .file-option:hover{
+                background-color:white;
+                border:1px solid black;
             }
             .menu{
                 display:none;
             }
             #hello{
-                text-align:right;
+                text-align:center;
+                color:white;
             }
             #menus{
                 display:flex;
                 flex-direction: row;
+            }
+            #add-ingredient{
+                background-color: yellow;
             }
         </style>
     </head>
